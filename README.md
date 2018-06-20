@@ -9,7 +9,6 @@
     *   user with role admin
 
         *   have all rights
-
         *   can enable or disable users, courses or subjects
 
     *   user with role teacher
