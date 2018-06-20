@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <h1>Courses</h1>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col" >Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for course in courses %}
+            <tr>
+                <td>{{ course.name }}</td>
+                <td>{{ course.description }}</td>
+                <td>
+                    <a
+                            class="btn btn-info btn-xs"
+                            href="{{ path('show_course_path', {
+                                'courseName': course.name
+                            }) }}">
+                        View
+                    </a>
+
+                    <a
+                            class="btn btn-primary btn-xs"
+                            href="{{ path('edit_course_path', {
+                                'id': course.id
+                            }) }}">
+                        Edit
+                    </a>
+
+                    <a
+                        class="btn btn-danger btn-xs"
+                        href="{{ path('delete_course_path', {
+                            'id': course.id
+                        }) }}">
+                            Delete
+                    </a>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock  %}
