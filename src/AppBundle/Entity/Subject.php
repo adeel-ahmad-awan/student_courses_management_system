@@ -2,23 +2,22 @@
 /**
  * Created by PhpStorm.
  * User: coeus
- * Date: 6/20/18
- * Time: 1:22 PM
+ * Date: 6/21/18
+ * Time: 10:42 AM
  */
 
 namespace AppBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="course")
+ * @ORM\Table(name="subject")
  */
-class Course
+class Subject
 {
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -47,10 +46,21 @@ class Course
      */
     private $user;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Course")
+     */
+    private $course_subjects;
+
+    /**
+     * Subject constructor.
+     * @param $course_subjects
+     */
     public function __construct()
     {
         $this->is_enabled = true;
+        $this->course_subjects = new ArrayCollection();
     }
+
 
     /**
      * @return mixed
@@ -58,6 +68,14 @@ class Course
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -124,8 +142,32 @@ class Course
         $this->user = $user;
     }
 
-    public function __toString()
+    /**
+     * @return mixed
+     */
+    public function getCourseSubjects()
     {
-        return $this->getName();
+        return $this->course_subjects;
     }
+
+    /**
+     * @param mixed $course_subjects
+     */
+    public function setCourseSubjects($course_subjects)
+    {
+        foreach ( $course_subjects as $course){
+            if (!($this->course_subjects->contains($course))) {
+                $this->course_subjects[] = $course;
+            }
+        }
+    }
+
+    /**
+     * @param Course $course
+     */
+    public function addCourse(Course $course)
+    {
+        $this->course_subjects[] = $course;
+    }
+
 }

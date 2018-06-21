@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <div class="mt-1">
+        <h4>Subject name: {{ subject.name }}</h4>
+    </div>
+    <p>Subject description: {{ subject.description }}</p>
+    <p>
+        Subject is enabled:
+        {% if (subject.isEnabled) %}
+            True.
+        {% else %}
+            False
+        {% endif %}
+    </p>
+
+{% endblock  %}

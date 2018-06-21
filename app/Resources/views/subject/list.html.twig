@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <h1>Subjects</h1>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col" >Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for subject in subjects %}
+            <tr>
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.description }}</td>
+                <td>
+                    <a
+                            class="btn btn-info btn-xs"
+                            href="{{ path('show_subject_path', {
+                                'subjectName': subject.name
+                            }) }}">
+                        View
+                    </a>
+
+                    <a
+                            class="btn btn-primary btn-xs"
+                            href="{{ path('edit_subject_path', {
+                                'id': subject.id
+                            }) }}">
+                        Edit
+                    </a>
+
+                    <a
+                            class="btn btn-danger btn-xs"
+                            href="{{ path('delete_subject_path', {
+                                'id': subject.id
+                            }) }}">
+                        Delete
+                    </a>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock  %}

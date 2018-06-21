@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>new subject</h1>
+            {{ form_start(subjectForm) }}
+                {{ form_widget(subjectForm) }}
+                <button type="submit" class="btn btn-primary">Save</button>
+            {{ form_end(subjectForm) }}
+
+        </div>
+    </div>
+{% endblock  %}
