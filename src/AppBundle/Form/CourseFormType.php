@@ -13,6 +13,7 @@ class CourseFormType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('subject_courses')
         ;
     }
 

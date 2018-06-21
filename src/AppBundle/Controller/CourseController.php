@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Course;
 use AppBundle\Form\CourseFormType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,21 +27,31 @@ class CourseController extends Controller
     {
         $form = $this->createForm(CourseFormType::class);
         $form->handleRequest($request);
+        $errors = new ArrayCollection();
         if ($form->isSubmitted() && $form->isValid()){
             $course = $form->getData();
             $course->setUser($this->getUser());
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($course);
-            $em->flush();
-            //redirect to show page
-            return $this->redirectToRoute('show_course_path', [
-               'courseName' => $course->getName()
-            ]);
+            $subjectCount = $course->getSubjectCourses()->count();
+            if ($subjectCount < 3 or $subjectCount > 5 ) {
+                $errors[] = 'the number of subjects should be between 3 to 5';
+            } else {
+//                dump($course);
+//                die();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($course);
+                $em->flush();
+                //redirect to show page
+                return $this->redirectToRoute('show_course_path', [
+                    'courseName' => $course->getName()
+                ]);
+            }
+
         }
 
         return $this->render('course/new.html.twig', [
-            'courseForm' => $form->createView()
+            'courseForm' => $form->createView(),
+            'errors' => $errors,
         ]);
     }
 

@@ -9,6 +9,7 @@
 namespace AppBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -47,9 +48,15 @@ class Course
      */
     private $user;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Subject", mappedBy="course_subjects")
+     */
+    private $subject_courses;
+
     public function __construct()
     {
         $this->is_enabled = true;
+        $this->subject_courses = new ArrayCollection();
     }
 
     /**
@@ -124,6 +131,30 @@ class Course
         $this->user = $user;
     }
 
+    /**
+     * @return ArrayCollection|Subject[]
+     */
+    public function getSubjectCourses()
+    {
+        return $this->subject_courses;
+    }
+
+    /**
+     * @param $subject_courses
+     */
+    public function setSubjectCourses($subject_courses)
+    {
+        foreach ( $subject_courses as $subject){
+            if (!($this->subject_courses->contains($subject))) {
+                $this->subject_courses[] = $subject;
+                $subject->addCourse($this);
+            }
+        }
+    }
+
+    /**
+     * @return mixed
+     */
     public function __toString()
     {
         return $this->getName();

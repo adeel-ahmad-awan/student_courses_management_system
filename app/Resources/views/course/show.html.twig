@@ -7,4 +7,33 @@
     </div>
     <p class="lead">{{ course.description }}</p>
 
+    <h4>subjects list</h4>
+
+    <table class="table table-striped table-dark">
+        <thead>
+        <tr>
+            <th scope="col">Subject Name</th>
+            <th scope="col">Action </th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for subject in course.subjectCourses %}
+                <tr>
+                    <td>
+                        {{ subject }}
+                    </td>
+                    <td>
+                        <a
+                                class="btn btn-info btn-xs"
+                                href="{{ path('show_subject_path', {
+                                    'subjectName': subject.name
+                                }) }}">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock  %}

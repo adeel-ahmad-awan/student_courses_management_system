@@ -47,7 +47,7 @@ class Subject
     private $user;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Course")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Course", inversedBy="subject_courses")
      */
     private $course_subjects;
 
@@ -168,6 +168,14 @@ class Subject
     public function addCourse(Course $course)
     {
         $this->course_subjects[] = $course;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __toString()
+    {
+        return $this->getName();
     }
 
 }
