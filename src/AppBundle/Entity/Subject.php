@@ -142,6 +142,8 @@ class Subject
         $this->user = $user;
     }
 
+
+
     /**
      * @return mixed
      */

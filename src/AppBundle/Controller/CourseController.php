@@ -36,8 +36,6 @@ class CourseController extends Controller
             if ($subjectCount < 3 or $subjectCount > 5 ) {
                 $errors[] = 'the number of subjects should be between 3 to 5';
             } else {
-//                dump($course);
-//                die();
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($course);
                 $em->flush();
