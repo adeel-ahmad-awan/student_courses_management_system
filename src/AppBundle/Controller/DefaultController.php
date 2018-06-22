@@ -26,21 +26,22 @@ class DefaultController extends Controller
             $courses = $em->getRepository('AppBundle:Course')->findAll();
             $subjects = $em->getRepository('AppBundle:Subject')->findAll();
             return $this->render('default/index.html.twig', [
-                'role' => implode(' ', $user_role),
+                'role' => 'ROLE_TEACHER',
                 'users' => null,
                 'courses' => $courses,
-                'subjects' => $subjects
+                'subjects' => $subjects,
+                'current_user' => $this->getUser()
             ]);
         }
 
         if (in_array('ROLE_STUDENT', $user_role)) {
             $em = $this->getDoctrine()->getManager();
-            $subjects = $em->getRepository('AppBundle:Subject')->findAll();
             return $this->render('default/index.html.twig', [
-                'role' => implode(' ', $user_role),
+                'role' => 'ROLE_STUDENT',
                 'users' => null,
-                'courses' => null,
-                'subjects' => $subjects
+                'courses' => $this->getUser()->getCourse(),
+                'subjects' => null,
+                'current_user' => $this->getUser()
             ]);
         }
 
@@ -50,10 +51,11 @@ class DefaultController extends Controller
             $courses = $em->getRepository('AppBundle:Course')->findAll();
             $subjects = $em->getRepository('AppBundle:Subject')->findAll();
             return $this->render('default/index.html.twig', [
-                'role' => implode(' ', $user_role),
+                'role' => 'ROLE_ADMIN',
                 'users' => $users,
                 'courses' => $courses,
-                'subjects' => $subjects
+                'subjects' => $subjects,
+                'current_user' => $this->getUser()
             ]);
         }
 
@@ -114,5 +116,33 @@ class DefaultController extends Controller
         $em->flush();
         return $this->redirectToRoute('homepage');
     }
+
+    /**
+     * @Route("adopt", name="adoptCourse")
+     */
+    public function studentAdoptCourse()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $courses = $em->getRepository('AppBundle:Course')
+            ->findAll();
+        return $this->render(':default:adopt.html.twig', [
+            'courses' => $courses
+        ]);
+    }
+
+    /**
+     * @Route("add/adopted/course{id}", name="add_adopted_course")
+     */
+    public function add_adopted_course($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $course = $em->getRepository('AppBundle:Course')->findOneBy([
+            'id' => $id
+        ]);
+        $this->getUser()->setCourse($course);
+        $em->flush();
+        return $this->redirectToRoute('homepage');
+    }
+
 
 }

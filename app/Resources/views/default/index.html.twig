@@ -70,38 +70,66 @@
         </table>
     {% endif %}
 
-    <h2>Subjects</h2>
-    {{ dump(subjects) }}
-    <table class="table table-dark">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Enabled</th>
-            <th>Created by</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for subject in subjects %}
+
+    {% if subjects != null %}
+        <h2>Subjects</h2>
+        {{ dump(subjects) }}
+        <table class="table table-dark">
+            <thead>
             <tr>
-                <td>{{ subject.name }}</td>
-                <td>{{ subject.description }}</td>
-                <td>{{ subject.getisEnabled }}</td>
-                <td>{{ subject.user.username }}</td>
-                <td>
-                    <a
-                            class="btn btn-danger btn-xs"
-                            href="{{ path('disable_subject', { 'id': subject.id }) }}">
-                        Disable
-                    </a>
-
-                </td>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Enabled</th>
+                <th>Created by</th>
+                <th>Actions</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for subject in subjects %}
+                <tr>
+                    <td>{{ subject.name }}</td>
+                    <td>{{ subject.description }}</td>
+                    <td>{{ subject.getisEnabled }}</td>
+                    <td>{{ subject.user.username }}</td>
+                    <td>
+                        <a
+                                class="btn btn-danger btn-xs"
+                                href="{{ path('disable_subject', { 'id': subject.id }) }}">
+                            Disable
+                        </a>
 
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+
+    {% if current_user.getCourse() != null %}
+        <h3>Adopted Course</h3>
+        <h5>{{ current_user.getCourse() }}</h5>
+
+        {% if role == 'ROLE_STUDENT' %}
+            <a
+                    class="btn btn-primary btn-xs"
+                    href="{{ path('adoptCourse') }}">
+                Adopt another Course
+            </a>
+
+        {% endif %}
+
+    {% else %}
+        <h3>No adopted Course</h3>
+        {% if role == 'ROLE_STUDENT' %}
+            <a
+                    class="btn btn-primary btn-xs"
+                    href="{{ path('adoptCourse') }}">
+                Adopt Course
+            </a>
+
+        {% endif %}
+    {% endif %}
 
 {% endblock %}
 
