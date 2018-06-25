@@ -39,7 +39,7 @@ class DefaultController extends Controller
             return $this->render('default/index.html.twig', [
                 'role' => 'ROLE_STUDENT',
                 'users' => null,
-                'courses' => $this->getUser()->getCourse(),
+                'courses' => null,
                 'subjects' => null,
                 'current_user' => $this->getUser()
             ]);
@@ -47,7 +47,8 @@ class DefaultController extends Controller
 
         if (in_array('ROLE_ADMIN', $user_role)) {
             $em = $this->getDoctrine()->getManager();
-            $users[] = $em->getRepository('AppBundle:User')->findAll();
+            $users[] = $em->getRepository('AppBundle:User')
+                ->findAllExceptCurrentUser($this->getUser());
             $courses = $em->getRepository('AppBundle:Course')->findAll();
             $subjects = $em->getRepository('AppBundle:Subject')->findAll();
             return $this->render('default/index.html.twig', [
@@ -59,14 +60,6 @@ class DefaultController extends Controller
             ]);
         }
 
-//
-//        dump($users);
-//        die();
-
-//        return $this->render('default/index.html.twig', [
-//            'role' => implode(' ', $user_role),
-//            'users' => $users
-//        ]);
     }
 
     /**
@@ -74,15 +67,21 @@ class DefaultController extends Controller
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("disable/user/{id}", name="disable_user")
      */
-    public function disableUser($id)
+    public function disableOrEnableUser($id)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('AppBundle:User')->findOneBy([
             'id'=> $id
         ]);
-        $user->setEnabled(false);
+        if ($user->isEnabled()){
+            $user->setEnabled(false);
+        } else {
+            $user->setEnabled(true);
+        }
+
         $em->flush();
         return $this->redirectToRoute('homepage');
+
     }
 
     /**
@@ -90,13 +89,18 @@ class DefaultController extends Controller
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("disable/course/{id}", name="disable_course")
      */
-    public function disableCourse($id)
+    public function disableOrEnableCourse($id)
     {
         $em = $this->getDoctrine()->getManager();
         $course = $em->getRepository('AppBundle:Course')->findOneBy([
             'id'=> $id
         ]);
-        $course->setIsEnabled(false);
+        if ($course->getisEnabled()){
+            $course->setIsEnabled(false);
+        } else {
+            $course->setIsEnabled(true);
+        }
+
         $em->flush();
         return $this->redirectToRoute('homepage');
     }
@@ -106,13 +110,17 @@ class DefaultController extends Controller
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("disable/subject/{id}", name="disable_subject")
      */
-    public function disableSubject($id)
+    public function disableOrEnableSubject($id)
     {
         $em = $this->getDoctrine()->getManager();
         $subject = $em->getRepository('AppBundle:Subject')->findOneBy([
             'id'=> $id
         ]);
-        $subject->setIsEnabled(false);
+        if ($subject->getisEnabled()) {
+            $subject->setIsEnabled(false);
+        } else {
+            $subject->setIsEnabled(true);
+        }
         $em->flush();
         return $this->redirectToRoute('homepage');
     }

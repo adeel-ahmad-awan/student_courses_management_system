@@ -2,17 +2,19 @@
 
 {% block body %}
     <h1>Home Page</h1>
-    <p>currently logged in as {{ role }}</p>
+    <p>currently logged in as {{ role }}.| <a href="{{ logout_url(key = null) }}">Logout</a></p>
 
     {% if users != null %}
         <h2>Users</h2>
-        {{ dump(users) }}
+        {#{{ dump(users) }}#}
+        <h4>user count = {{ users[0]|length }} </h4>
         <table class="table table-dark">
             <thead>
             <tr>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Enabled</th>
+                <th>Roles</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -22,12 +24,21 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.enabled }}</td>
+                    <td>{{ user.getRoles()[0] }}</td>
                     <td>
-                        <a
-                                class="btn btn-danger btn-xs"
-                                href="{{ path('disable_user', { 'id': user.id }) }}">
-                            Disable
-                        </a>
+                        {% if user.enabled == 1 %}
+                            <a
+                                    class="btn btn-danger btn-xs"
+                                    href="{{ path('disable_user', { 'id': user.id }) }}">
+                                Disable
+                            </a>
+                        {% else %}
+                            <a
+                                    class="btn btn-info btn-xs"
+                                    href="{{ path('disable_user', { 'id': user.id }) }}">
+                                Enable
+                            </a>
+                        {% endif %}
 
                     </td>
                 </tr>
@@ -38,7 +49,12 @@
 
     {% if courses != null %}
         <h2>Courses</h2>
-        {{ dump(courses) }}
+        {#{{ dump(courses) }}#}
+        <h4>courses count = {{ courses|length }} </h4>
+        <a class="btn btn-info btn-xs" href="{{ path('list_course_path') }}">
+            Course
+        </a>
+
         <table class="table table-dark">
             <thead>
             <tr>
@@ -57,12 +73,19 @@
                     <td>{{ course.getisEnabled }}</td>
                     <td>{{ course.user.username }}</td>
                     <td>
-                        <a
-                                class="btn btn-danger btn-xs"
-                                href="{{ path('disable_course', { 'id': course.id }) }}">
-                            Disable
-                        </a>
-
+                        {% if course.getisEnabled == 1 %}
+                            <a
+                                    class="btn btn-danger btn-xs"
+                                    href="{{ path('disable_course', { 'id': course.id }) }}">
+                                Disable
+                            </a>
+                        {% else %}
+                            <a
+                                    class="btn btn-info btn-xs"
+                                    href="{{ path('disable_course', { 'id': course.id }) }}">
+                                Enable
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -73,7 +96,11 @@
 
     {% if subjects != null %}
         <h2>Subjects</h2>
-        {{ dump(subjects) }}
+        {#{{ dump(subjects) }}#}
+        <h4>subjects count = {{ subjects|length }} </h4>
+        <a class="btn btn-info btn-xs" href="{{ path('list_subject_path') }}">
+            Subjects
+        </a>
         <table class="table table-dark">
             <thead>
             <tr>
@@ -92,12 +119,19 @@
                     <td>{{ subject.getisEnabled }}</td>
                     <td>{{ subject.user.username }}</td>
                     <td>
-                        <a
-                                class="btn btn-danger btn-xs"
-                                href="{{ path('disable_subject', { 'id': subject.id }) }}">
-                            Disable
-                        </a>
-
+                        {% if  subject.getisEnabled == 1 %}
+                            <a
+                                    class="btn btn-danger btn-xs"
+                                    href="{{ path('disable_subject', { 'id': subject.id }) }}">
+                                Disable
+                            </a>
+                        {% else %}
+                            <a
+                                    class="btn btn-info btn-xs"
+                                    href="{{ path('disable_subject', { 'id': subject.id }) }}">
+                                Enable
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -105,29 +139,45 @@
         </table>
     {% endif %}
 
+    {% if role == 'ROLE_STUDENT' %}
 
-    {% if current_user.getCourse() != null %}
-        <h3>Adopted Course</h3>
-        <h5>{{ current_user.getCourse() }}</h5>
+        {% if current_user.getCourse() != null %}
+            <h1>Adopted Course</h1>
 
-        {% if role == 'ROLE_STUDENT' %}
+            <div class="mt-1">
+                <h3>{{ current_user.getCourse() }}</h3>
+            </div>
+            <p class="lead">{{ current_user.getCourse().description }}</p>
+
+            <table class="table table-striped table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">Subject Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for subject in current_user.getCourse().subjectCourses %}
+                    <tr>
+                        <td>
+                            {{ subject }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
             <a
                     class="btn btn-primary btn-xs"
                     href="{{ path('adoptCourse') }}">
                 Adopt another Course
             </a>
 
-        {% endif %}
-
-    {% else %}
-        <h3>No adopted Course</h3>
-        {% if role == 'ROLE_STUDENT' %}
-            <a
-                    class="btn btn-primary btn-xs"
-                    href="{{ path('adoptCourse') }}">
-                Adopt Course
-            </a>
-
+        {% else %}
+            <h3>No adopted Course</h3>
+                <a
+                        class="btn btn-primary btn-xs"
+                        href="{{ path('adoptCourse') }}">
+                    Adopt Course
+                </a>
         {% endif %}
     {% endif %}
 

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Repository\CourseRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,6 +16,12 @@ class SubjectFormType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('course_subjects')
+//            ->add('course_subjects', EntityType::class, [
+//                'class' => 'AppBundle\Entity\Course',
+//                'query_builder' => function(CourseRepository $repo) {
+//                    return $repo->findAllEnabledCourses();
+//                }
+//            ])
         ;
     }
 

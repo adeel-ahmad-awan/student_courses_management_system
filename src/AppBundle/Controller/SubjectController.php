@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Subject;
 use AppBundle\Form\SubjectFormType;
+use AppBundle\Repository\CourseRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +27,9 @@ class SubjectController extends Controller
      */
     public function newAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->getRepository('AppBundle:Course')->findAllEnabledCourses();
+
         $form = $this->createForm(SubjectFormType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() and $form->isValid()) {
@@ -55,6 +59,10 @@ class SubjectController extends Controller
      */
     public function editAction(Request $request, Subject $subject)
     {
+        if ($subject->getisEnabled() == false) {
+            throw $this->createNotFoundException('Course "'. $subject->getName() .'" is disabled by admin');
+        }
+
         $form = $this->createForm(SubjectFormType::class, $subject);
         $form->handleRequest($request);
         if ($form->isSubmitted() and $form->isValid()) {
@@ -102,7 +110,10 @@ class SubjectController extends Controller
 
         if (!$subject) {
             throw $this->createNotFoundException('no subject available with name '. $subjectName);
+        } elseif ($subject->getisEnabled() == false) {
+            throw $this->createNotFoundException('Course "'. $subject->getName() .'" is disabled by admin');
         }
+
 
         return $this->render('subject/show.html.twig', [
             'subject' => $subject
@@ -125,7 +136,10 @@ class SubjectController extends Controller
 
         if (!$subject) {
             throw $this->createNotFoundException('no subject found with id '. $id);
+        } elseif ($subject->getisEnabled() == false) {
+            throw $this->createNotFoundException('Course "'. $subject->getName() .'" is disabled by admin');
         }
+
 
         $em->remove($subject);
         $em->flush();

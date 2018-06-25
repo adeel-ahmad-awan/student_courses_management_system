@@ -58,6 +58,9 @@ class CourseController extends Controller
      */
     public function editAction(Request $request, Course $course)
     {
+        if ($course->getisEnabled() == false) {
+            throw $this->createNotFoundException('Course "'. $course->getName() .'" is disabled by admin');
+        }
         $form = $this->createForm(CourseFormType::class, $course);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
@@ -103,6 +106,8 @@ class CourseController extends Controller
             ->findOneBy(['id' => $id]);
         if (!$course) {
             throw $this->createNotFoundException('no course with id '. $id);
+        } elseif ($course->getisEnabled() == false) {
+            throw $this->createNotFoundException('Course "'. $course->getName() .'" is disabled by admin');
         }
 
         $em->remove($course);
@@ -127,6 +132,9 @@ class CourseController extends Controller
 
         if (!$course) {
             throw $this->createNotFoundException('no course with name '. $courseName);
+        } elseif ($course->getisEnabled() == false) {
+            throw $this->createNotFoundException('Course "'. $courseName .'" is disabled by admin');
+            throw $this->createNotFoundException();
         }
 
         return $this->render('course/show.html.twig', [

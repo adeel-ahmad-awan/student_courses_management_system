@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CourseRepository")
  * @ORM\Table(name="course")
  */
 class Course
